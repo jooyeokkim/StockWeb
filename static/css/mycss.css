@@ -1,0 +1,30 @@
+section {
+    background-image: url(../main/stock_img1.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    width: 960px;
+    height: 640px;
+    border: 2px solid;
+    margin:0 auto;
+}
+#main_intro {
+    position: absolute;
+    width:500px;
+    height:300px;
+}
+span {
+    font-family: 'Noto Serif KR', serif;
+    font-size:25px;
+}
+#font_bhs {
+    font-family: 'Noto Serif KR', serif;
+}
+.mainContainer {
+    position:relative;
+}
+#textControl {
+    font-size:1rem;
+    width:250px;
+    margin-right: 2px;
+    text-align: center;
+}
