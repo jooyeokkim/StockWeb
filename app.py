@@ -11,9 +11,8 @@ app = Flask(__name__)
 def home():
     return 'Home!'
 
-@app.route('/info')
+@app.route('/info', methods=['GET', 'POST'])
 def info():
-    start_time = timeit.default_timer()
     stock_data = pd.read_csv('name_code.csv')
 
     a = []
@@ -30,8 +29,10 @@ def info():
     # add summary_info [end] - Jooyeok 20210417
 
     # add code converter [start] - Jooyeok 20210417
-    _input="5931"
+    _input=str(request.form['item'])
+    print(_input)
     code=""
+    name=""
     for i in _input: #code_list와 정확히 비교하기 위해 앞에 있는 0들을 모두 제거함
         if i=='0':
             _input=_input[1:]
@@ -44,20 +45,15 @@ def info():
             for j in range(6-code_len): #종목코드는 6자코드이기 때문에, 남은 자리수 만큼 앞을 0으로 모두 채워둠
                 code+="0"
             code+=code_list[i] #0으로 채워둔 자리 뒤에 code_list[i]를 붙여 최종 6자코드를 만듬
+            name=name_list[i]
             break
 
     if len(code)==0: #위 for문 안의 if문에 한번도 들어가지 않았다면 code는 빈 값이다.
-        print("종목을 찾을 수 없습니다")
-    else:
-        print(code)
+        return render_template('fail.html')
     # add code converter [end] - Jooyeok 20210417
             
-    code="005930"
-
     URL = "https://finance.naver.com/item/main.nhn?code=" + code
-
     html = urlopen(URL)
-
     soup = BeautifulSoup(html, 'html.parser')
 
     # add summary_info [start] - Jooyeok 20210417
@@ -109,15 +105,11 @@ def info():
     STOCK_INFO = []  # 시가총액,순위 리스트
     STOCK_INFO.append(STOCK_VALUE)
     STOCK_INFO.append(RANK)
-
-
     # STOCK_INFO는 시가총액과 순위를 포함한 리스트
 
 
     foreign = soup.select('div.gray')[0]
     FOREIGN_STOCK = [item.get_text().strip() for item in foreign.select('em')][0:3]  # 외국인한도주식수, 외국인보유주식수, 외국인소진율
-
-
     # FOREIGN_STOCK는 외국인한도주식수, 외국인보유주식수, 외국인소진율을 포함한 리스트
 
 
@@ -134,8 +126,6 @@ def info():
     D_PER = [item.get_text().strip() for item in s_per.select('em')][0]  # 동일업종 per
 
     PER_TABLE.append(D_PER)  # 동일업종 per을 PER_TABLE 리스트에 추가
-
-
     # PER_TABLE은 PER EPS 추정PER 추정EPS PBR BPS 배당수익률 동일업종 per을 포함한 리스트
 
 
@@ -148,10 +138,7 @@ def info():
     finance_index = [item.get_text().strip() for item in finance_html.select('th.h_th2')][3:]
 
     finance_data = [item.get_text().strip() for item in finance_html.select('td')]
-
-
     # finance_data는 재무제표 2차원 배열 15x10
-
 
     if (finance_data[0] == ''):  # 재무제표 비어있을 시
         print("재무제표가 비었습니다.")
@@ -169,16 +156,18 @@ def info():
     chart_monthly_url = chart_url_pref+"candle/month"+chart_url_post #월봉 봉차트 URL
     #change to bar chart [end] - Jooyeok 20210417
 
-    terminate_time = timeit.default_timer()
+    return render_template('check.html',
+        code=code,
+        name=name,
+        summary_info=summary_info
+    )
 
-    print("%f초 걸렸습니다." % (terminate_time - start_time))
+@app.route('/check')
+def check():
+    return render_template('check.html')
 
-
-    return "good"
-
-
-@app.route('/test', methods=['POST','GET'])
-def test():
+@app.route('/main', methods=['POST','GET'])
+def main():
     return render_template('main.html')
 
 if __name__ == '__main__':

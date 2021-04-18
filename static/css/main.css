@@ -24,13 +24,13 @@ section::after{
 #main-intro {
     position: absolute;
     width:500px;
-    height:300px;
+    height:400px;
 }
 span {
     font-family: 'Quicksand', sans-serif;
     font-size:70px;
 }
-#font-bhs {
+#font-bhs, #search-button {
     font-family: 'Noto Sans KR', sans-serif;
 }
 .mainContainer {
@@ -50,3 +50,7 @@ span {
     margin-right: 15px;
     margin-left: 10px;
 }
+
+#loading {
+    display: none;
+} 

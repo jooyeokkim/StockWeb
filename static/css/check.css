@@ -1,0 +1,21 @@
+.mainContainer {
+    position:relative;
+}
+#textControl {
+    font-size:1rem;
+    width:250px;
+    margin-right: 10px;
+    text-align: center;
+}
+.white, .white a {
+    color: #fff;
+}
+
+.icon-margin {
+    margin-right: 15px;
+    margin-left: 10px;
+}
+
+#search {
+    margin : 10px;
+}
