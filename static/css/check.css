@@ -19,3 +19,21 @@
 #search {
     margin : 10px;
 }
+
+#code-name{
+    text-decoration: underline double gray;
+    margin:1rem;
+}
+
+#info-s{
+    margin: 0.5rem;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
+#loading {
+    display: none;
+}
+
+#font-bhs, #search-button{
+    font-family: 'Noto Sans KR', sans-serif;
+}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import requests
 import numpy as np
 from bs4 import BeautifulSoup
@@ -29,8 +29,13 @@ def info():
     # add summary_info [end] - Jooyeok 20210417
 
     # add code converter [start] - Jooyeok 20210417
-    _input=str(request.form['item'])
-    print(_input)
+    if len(request.args.to_dict()): # Items menu handle - Jooyeok 20210424
+        _input="삼성전자"
+    else :
+        _input=str(request.form['item']).replace(" ","").upper() # add replace, upper method[start] - Jooyeok 20210424
+    if len(_input)==0: #공백을 검색했을 경우 삼성전자 종목 페이지로 이동
+        _input="삼성전자"
+
     code=""
     name=""
     for i in _input: #code_list와 정확히 비교하기 위해 앞에 있는 0들을 모두 제거함
@@ -40,7 +45,7 @@ def info():
             break
 
     for i in range(len(name_list)):
-        if code_list[i]==_input or name_list[i]==_input: #사용자가 종목코드로 검색할 경우와 종목명으로 검색할 경우를 모두 반영
+        if code_list[i]==_input or name_list[i].upper() ==_input: #사용자가 종목코드로 검색할 경우와 종목명으로 검색할 경우를 모두 반영
             code_len = len(code_list[i])
             for j in range(6-code_len): #종목코드는 6자코드이기 때문에, 남은 자리수 만큼 앞을 0으로 모두 채워둠
                 code+="0"
