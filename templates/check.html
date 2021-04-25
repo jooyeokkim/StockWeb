@@ -27,22 +27,18 @@
             <div class="collapse navbar-collapse" id="navbarText">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="http://localhost:5000/main">Home</a>
+                  <a class="nav-link active" aria-current="page" href="http://localhost:5000/main">홈</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="http://localhost:5000/info?item=005930">Items</a>
+                  <a class="nav-link" href="http://localhost:5000/info?item=005930">종목</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Statistic</a>
+                  <a class="nav-link" href="#">통계</a>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
-        <!-- <div id="search" class="d-flex justify-content-center align-items-center">
-            <input id="textControl" type="text" placeholder="종목명·종목코드 입력" autofocus>
-            <button id="font-bhs" type="button" class="btn btn-danger">종목 검색</button>
-        </div> -->
         <div class="d-flex justify-content-center align-items-center">
           <div id="search" class="d-flex justify-content-center align-items-center">
             <form action="http://localhost:5000/info" method="POST">
@@ -57,7 +53,7 @@
             </div>
           </div>
         </div>
-        <div id="stock-info">
+        <div id="company-info">
             <div class="d-flex justify-content-center align-items-center">
               <p id="code-name" class="fs-3 d-inline">{{code}} {{name}}</p><br>
             </div>
@@ -70,15 +66,78 @@
               </div>
             </div>
         </div>
+        <p class="align-items-center fs-5 text-center"><b>주가 정보</b></p>
         <section class="d-flex justify-content-center align-items-center">
-            <div id="stock-info">
-                
+            <div id="stock-info" class="col-2">
+              <table class="table table-striped table-hover table-bordered border-dark">
+                <thead>
+                  <tr>
+                    <th scope="col" colspan="2">{{name}}({{code}})</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in range(STOCK_INFO|length) %}
+                    <tr>
+                      <td>{{STOCK_INFO_INDEX[i]}}</td>
+                      <td>{{STOCK_INFO[i]}}</td>
+                    </tr>
+                  {% endfor %}
+                  {% for i in range(PER_TABLE|length) %}
+                    <tr>
+                      <td>{{PER_TABLE_INDEX[i]}}</td>
+                      <td>{{PER_TABLE[PER_TABLE_INDEXNUM[i]]}}{{PER_TABLE_UNIT[i]}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
-            <div id="stock-price">
-
+            <div id="stock-price" class="d-flex flex-column">
+              <table id="price-table" class="table table-dark table-hover table-striped table-bordered border-light align-middle">
+                <thead>
+                  <tr>
+                    <th scope="col" colspan="2">{{name}}({{code}})</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>주가</td>
+                    {% if PRICE_TABLE[1][0]=="+" %}
+                      <td style="color:orangered;">{{PRICE_TABLE[0]}}</td>
+                    {% elif PRICE_TABLE[1][0]=="-" %}
+                      <td style="color:dodgerblue;">{{PRICE_TABLE[0]}}</td>
+                    {% else %}
+                      <td>{{PRICE_TABLE[0]}}</td>
+                    {% endif %}
+                  </tr>
+                  <tr>
+                    <td>등락율</td>
+                    {% if PRICE_TABLE[1][0]=="+" %}
+                      <td style="color:orangered;">{{PRICE_TABLE[1]}}</td>
+                    {% elif PRICE_TABLE[1][0]=="-" %}
+                      <td style="color:dodgerblue;">{{PRICE_TABLE[1]}}</td>
+                    {% else %}
+                      <td>{{PRICE_TABLE[1]}}</td>
+                    {% endif %}
+                  </tr>
+                </tbody>
+              </table>
+              <table id="same-type-table" class="table table-dark table-striped table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th scope="col">동일 업종 리스트</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in same_type_list %}
+                    <tr>
+                      <td>{{i}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
             <div id="stock-graph">
-
+              <img id="daily" class="border border-2" src="{{chart_daily_url}}" height="400" width="900">
             </div>
         </section>
         <footer style="text-align: center;">footer</footer>

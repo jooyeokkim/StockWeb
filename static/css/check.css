@@ -22,7 +22,8 @@
 
 #code-name{
     text-decoration: underline double gray;
-    margin:1rem;
+    margin-top:1rem;
+    margin-bottom:2rem;
 }
 
 #info-s{
@@ -36,4 +37,37 @@
 
 #font-bhs, #search-button{
     font-family: 'Noto Sans KR', sans-serif;
+}
+
+section{
+    margin: 1rem;
+}
+
+#company-info{
+    margin-bottom: 3rem;
+}
+
+#stock-price{
+    margin: 2rem;
+}
+
+#price-table, #same-type-table{
+    width:250px;
+    margin-bottom:2rem;
+    text-align: center;
+}
+
+#price-table td{
+    height:70px;
+    font-size:25px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+#same-type-table td{
+    padding:4px;
+    height:30px;
+}
+
+.nav-item{
+    margin-left:1rem;
 }
