@@ -53,4 +53,8 @@ span {
 
 #loading {
     display: none;
-} 
+}
+
+.nav-item{
+    margin-left:1rem;
+}
