@@ -20,7 +20,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-up white icon-margin" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5z"/>
             </svg>
-            <a class="navbar-brand" href="#">simplestock.kro.kr</a>
+            <a class="navbar-brand" href="http://localhost:5000/main">simplestock.kro.kr</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -57,7 +57,7 @@
             <div class="d-flex justify-content-center align-items-center">
               <p id="code-name" class="fs-3 d-inline">{{code}} {{name}}</p><br>
             </div>
-            <p class="align-items-center fs-5 text-center"><b>기업 개요</b></p>
+            <p id="menu-title" class="align-items-center fs-5 text-center"><b>기업 개요</b></p>
             <div class="d-flex justify-content-center align-items-center">
               <div class="d-flex flex-column align-items-center border border-secondary border-3 rounded">
                 {% for i in summary_info %}
@@ -66,7 +66,7 @@
               </div>
             </div>
         </div>
-        <p class="align-items-center fs-5 text-center"><b>주가 정보</b></p>
+        <p id="menu-title" class="align-items-center fs-5 text-center"><b>주가 정보</b></p>
         <section class="d-flex justify-content-center align-items-center">
             <div id="stock-info" class="col-2">
               <table class="table table-striped table-hover table-bordered border-dark">
@@ -152,6 +152,57 @@
               <img id="chart-img" class="border border-2" src="{{chart_daily_url}}" height="430" width="900">
             </div>
         </section>
+        <p id="menu-title" class="align-items-center fs-5 text-center"><b>재무제표</b></p>
+        <div id="stock-statements" class="d-flex justify-content-center align-items-center">
+          {% if finance_data|length==1 %}
+            <img src="{{url_for('static', filename='check/nostatement.PNG')}}" height="530" width="900">
+          {% else %}
+            <div id="statements-table-yearly">
+              <table id="finance-table-yearly" class="table table-light table-bordered border-dark table-hover align-middle text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">연간 실적</th>
+                    {% for date in annual_date %}
+                      <th scope="col">{{date}}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in range(0,9) %}
+                    <tr>
+                      <td>{{finance_index[i]}}</td>
+                      {% for j in range(0, annual_date|length) %}
+                        <td>{{finance_data[i][j]}}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div id="statements-table-quarterly">
+              <table id="finance-table-quarterly" class="table table-light table-bordered border-dark table-hover align-middle text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">분기 실적</th>
+                    {% for date in quarter_date %}
+                      <th scope="col">{{date}}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in range(0,9) %}
+                    <tr>
+                      <td>{{finance_index[i]}}</td>
+                      {% for j in range(4, 4+quarter_date|length) %}
+                        <td>{{finance_data[i][j]}}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
         <footer style="text-align: center;">footer</footer>
     </div>
     <script>

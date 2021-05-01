@@ -87,7 +87,7 @@ def info():
 
 
         same_types = price_table.select('tr')[0]  # price_table의 첫 번째 tr태그를 same_types에 대입
-        same_type = [item.get_text().strip() for item in same_types.select('th')][1:]  # same_types의 두번째 th인 동일업종부터 same_type에 넣어줌
+        same_type = [item.get_text().strip() for item in same_types.select('th')][2:]  # same_types의 두번째 th인 동일업종부터 same_type에 넣어줌
 
         type_list = []  # 뒷자리 코드6자리를 제외한 동일업종리스트
         same_type_list = []  # 뒷자리*를 제외한 동일업종리스트
@@ -134,11 +134,10 @@ def info():
         PER_TABLE_INDEX = ['PER', '추정PER', '동일업종PER', 'EPS', '추정EPS', 'PBR', 'BPS', '배당률']
         PER_TABLE_INDEXNUM = [0, 2, 7, 1, 3, 4, 5, 6]
         PER_TABLE_UNIT = ['배','배','배','원','원','배','원','%']
-        # change order[start] - Jooyeok 20210425
+        # change order[end] - Jooyeok 20210425
 
         s_per = soup.select('div.gray')[1]
         D_PER = [item.get_text().strip() for item in s_per.select('em')][0]  # 동일업종 per
-
         PER_TABLE.append(D_PER)  # 동일업종 per을 PER_TABLE 리스트에 추가
         # PER_TABLE은 PER EPS 추정PER 추정EPS PBR BPS 배당수익률 동일업종 per을 포함한 리스트
 
@@ -153,11 +152,8 @@ def info():
         finance_data = [item.get_text().strip() for item in finance_html.select('td')]
         # finance_data는 재무제표 2차원 배열 15x10
 
-        if (finance_data[0] == ''):  # 재무제표 비어있을 시
-            finance_data=None
-        else:
+        if finance_data[0] != '':
             finance_data = np.array(finance_data).reshape(len(finance_index),10)  # finance_data.resize(len(finance_index), 10)
-
         chart = soup.find("img", id="img_chart_area")  # 일봉 산차트 img태그
         chart_url = chart["src"]  # 일봉 선차트 URL
 
@@ -186,7 +182,11 @@ def info():
         chart_weekly_url=chart_weekly_url,
         chart_monthly_url=chart_monthly_url,
         PRICE_TABLE=PRICE_TABLE,
-        same_type_list=same_type_list
+        same_type_list=same_type_list,
+        annual_date=annual_date,
+        quarter_date=quarter_date,
+        finance_index=finance_index,
+        finance_data=finance_data
     )
 
 @app.route('/check')

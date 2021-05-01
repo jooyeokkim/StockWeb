@@ -40,7 +40,8 @@
 }
 
 section{
-    margin: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
 #company-info{
@@ -65,7 +66,7 @@ section{
 
 #same-type-table td{
     padding:4px;
-    height:30px;
+    height:40px;
 }
 
 .nav-item{
@@ -74,4 +75,17 @@ section{
 
 #chart-option{
     margin-bottom: 0.8rem;
+}
+
+#stock-statements{
+    margin: 1rem;
+}
+
+#menu-title {
+    background-color: lightgray;
+}
+
+#finance-table-quarterly {
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
