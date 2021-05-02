@@ -156,26 +156,14 @@ def info():
         quarter_date = date[7:13]
 
         finance_index = [item.get_text().strip() for item in finance_html.select('th.h_th2')][3:]
-        finance_data = [item.get_text().strip() for item in finance_html.select('td')]
 
-        fdempty=True # 재무제표 정보 존재 유무
-        if finance_data[0] != '': # 재무제표 정보가 존재할 경우
-            fdempty=False
-            finance_data = np.array(finance_data).reshape(len(finance_index), 10)
+        finance_data = [item.get_text().strip() for item in finance_html.select('td')]
         # finance_data는 재무제표 2차원 배열 15x10
 
-        chart = soup.find("img", id="img_chart_area")  # 일봉 산차트 img태그
-        chart_url = chart["src"]  # 일봉 선차트 URL
-
-        # change to bar chart [start] - Jooyeok 20210417
-        chart_url_pref = chart_url.split('area/day')[0]
-        chart_url_post = chart_url.split('area/day')[1]
-        chart_daily_url = chart_url_pref + "candle/day" + chart_url_post  # 주봉 봉차트 URL
-        chart_weekly_url = chart_url_pref + "candle/week" + chart_url_post  # 주봉 봉차트 URL
-        chart_monthly_url = chart_url_pref + "candle/month" + chart_url_post  # 월봉 봉차트 URL
-        # change to bar chart [end] - Jooyeok 20210417
-
-        if fdempty==False:
+        f_data = list(filter(lambda x: x != '', finance_data))
+        if f_data:
+            finance_data = np.array(finance_data).reshape(len(finance_index),
+                                                          10)  # finance_data.resize(len(finance_index), 10)
             Sales = finance_data[0][:4]  # 매출액
             Profit = finance_data[1][:4]  # 영업이익
             Income = finance_data[2][:4]  # 당기순이익
@@ -187,78 +175,118 @@ def info():
             Income = list(map(str, Income))
             Profit_rate = list(map(str, Profit_rate))
             Income_rate = list(map(str, Income_rate))
-            n = 0
 
-            for i1, i2, i3, i4, i5 in zip(Sales, Profit, Income, Profit_rate, Income_rate):
+            n = 0
+            data = []   # annual date, 매출액,영업이익,당기순이익 순의 2차원 배열
+            data_rate = []  # annual date, 영업이익률, 순이익률 순의 2차원 배열
+            for i0, i1, i2, i3, i4, i5 in zip(annual_date, Sales, Profit, Income, Profit_rate, Income_rate):
+                data1 = []
+                data2 = []
+                if i0 != '':
+                    data1.append(i0)    # data1에 연간 해를 넣어줌
+                    data2.append(i0)
+                else:
+                    data1.append(np.nan)  # 날짜가 비어있을 시, nan을 넣어줌
+                    data2.append(np.nan)
+
                 if i1 != '':
                     i1 = i1.split(',')  # str형을 ,을 기준으로 리스트화 (3,500 -> ['3','500']
                     i1 = ''.join(i1)  # 리스트화 된것을 합쳐줌 [3,500] -> 3500
                     Sales[n] = int(i1)  # str형->int형
+                    data1.append(int(i1))
                 else:
                     Sales[n] = np.nan  # NULL값 처리 (차트에서의 공백 처리)
-
+                    data1.append(np.nan)
                 if i2 != '':
                     i2 = i2.split(',')
                     i2 = ''.join(i2)
                     Profit[n] = int(i2)
+                    data1.append(int(i2))
                 else:
                     Profit[n] = np.nan
-
+                    data1.append(np.nan)
                 if i3 != '':
                     i3 = i3.split(',')
                     i3 = ''.join(i3)
                     Income[n] = int(i3)
+                    data1.append(int(i3))
                 else:
                     Income[n] = np.nan
+                    data1.append(np.nan)
 
                 if i4 != '':
                     Profit_rate[n] = float(i4)
+                    data2.append(float(i4))
                 else:
                     Profit_rate[n] = np.nan
+                    data2.append(np.nan)
 
                 if i5 != '':
                     Income_rate[n] = float(i5)
+                    data2.append(float(i5))
                 else:
                     Income_rate[n] = np.nan
+                    data2.append(np.nan)
 
+                data.append(data1)   # for문을 돌때마다 연간 해, 매출액, 영업이익, 당기순이익을 넣어줌
+                data_rate.append(data2) # for문을 돌때마다 연간 해, 영업이익률, 순이익률을 넣어줌
                 n += 1
 
             label = annual_date
+
+            df1 = pd.DataFrame(data,columns=["date", "매출액", "영업이익", "당기순이익"])  # 다중 막대 그래프를 표현하기 위한 판다스 dataframe형태로 df1에 저장
 
             pyplot.rcParams["font.family"] = "Malgun Gothic"  # 한글 폰트 설정
             pyplot.rcParams["font.size"] = 12  # 한글 폰트 사이즈 설정
             pyplot.rcParams['figure.figsize'] = (12, 8)  # 차트 크기 설정
             pyplot.rc('axes', unicode_minus=False)  # 음수 깨짐 방지
 
-            pyplot.clf() # 그래프를 초기화
-
             x = np.arange(len(label))  # x축에 대한 좌표 배열 생성
 
-            pyplot.bar(x, Sales, label='매출액', width=0.2, color='red')  # 매출액 막대그래프 생성
-            pyplot.bar(x + 0.2, Profit, label='영업이익', width=0.2, color='blue')  # 매출액 좌표에서 +0.2만큼 이동 후 영업이익 막대그래프 생성
-            pyplot.bar(x + 0.4, Income, label='당기순이익', width=0.2, color='green')
+            #pyplot.bar(x, Sales, label='매출액', width=0.2, color='red')  # 매출액 막대그래프 생성
+            #pyplot.bar(x + 0.2, Profit, label='영업이익', width=0.2, color='blue')  # 매출액 좌표에서 +0.2만큼 이동 후 영업이익 막대그래프 생성
+            #pyplot.bar(x + 0.4, Income, label='당기순이익', width=0.2, color='green')
+            df1.plot(x="date", y=["매출액", "영업이익", "당기순이익"], kind='bar',color=['red','blue','green'])  # 이 코드로 위 3개를 대신 할 수 있음, x좌표를 연간 해로 하기위한 선택
 
-            pyplot.title("연간 매출액/영업이익/당기순이익")
-            pyplot.legend(loc='upper center', bbox_to_anchor=(0.3, -0.05),
-                        fancybox=True, shadow=True, ncol=5)   # 하단 center에 매출액,영업이익,당기순이익 표시
+            pyplot.title("연도별 매출액/영업이익/당기순이익")
+            pyplot.legend(loc='upper center', bbox_to_anchor=(0.2, 1.125), fancybox=True, shadow=True, ncol=5)  # 매출액,영업이익,당기순이익 표시
 
             if Sales[0] >= 1000000 or Sales[1] >= 1000000 or Sales[2] >= 1000000 or Sales[3] >= 1000000:
-                pyplot.ylabel("백조(원)", rotation=90, labelpad=30)
+                pyplot.ylabel("백조 원", rotation=90, labelpad=30)
             else:
-                pyplot.ylabel("억(원)", rotation=90, labelpad=30)
+                pyplot.ylabel("억 원", rotation=90, labelpad=30)
             # y축은 100만이상 수치는 표현 불가, 가장 큰 수치인 매출액을 기준으로 100만이상이면 단위를 100조로 표현하고 아니면 억 원
 
             ax1 = pyplot.twinx()  # x축을 공유하는 이익률 선그래프 (2중 y축)
 
-            ax1.plot(label, Profit_rate, color='purple', linewidth=2.5, marker='o', label='영업이익률')
-            ax1.plot(label, Income_rate, color='orange', linewidth=2.5, marker='o', label='순이익률')
+            df2 = pd.DataFrame(data_rate, columns=["date", "영업이익률", "순이익률"])
 
-            ax1.legend(loc='upper center', bbox_to_anchor=(0.7, -0.05),
-                    fancybox=True, shadow=True, ncol=5)  # 하단 center에 순이익률, 영업이익률 표시
+            #ax1.plot(label, Profit_rate, color='purple', linewidth=2.5, marker='o', label='영업이익률')
+            #ax1.plot(label, Income_rate, color='orange', linewidth=2.5, marker='o', label='순이익률')
+
+            df2.plot(x="date", y=["영업이익률", "순이익률"], kind='line', ax=ax1, marker='o', linewidth=2.5,color=['purple','orange'])
+            # 위 코드 2개 대신 df2.plot으로 해줄 수 있음
+
+            # ax1.legend(loc='upper right')  # 오른쪽 상단에 영업이익률,순이익률 표시
+            ax1.legend(loc='upper center', bbox_to_anchor=(0.8, 1.125),fancybox=True, shadow=True, ncol=5)  # 순이익률, 영업이익률 표시
 
             ax1.set_ylabel('%', rotation=0, labelpad=10)  # %의 각도 조정
 
-            pyplot.savefig("static/check/"+code+".png", bbox_inches='tight', dpi=200)  # 여백을 최소화하여 파일 저장
+            pyplot.savefig("static/check/" + code + ".png", bbox_inches='tight', dpi=200)  # 여백을 최소화하여 파일 저장
+
+            pyplot.clf()  # 그래프를 초기화
+
+        chart = soup.find("img", id="img_chart_area")  # 일봉 차트 img태그
+        chart_url = chart["src"]  # 일봉 선차트 URL
+
+        # change to bar chart [start] - Jooyeok 20210417
+        chart_url_pref = chart_url.split('area/day')[0]
+        chart_url_post = chart_url.split('area/day')[1]
+        chart_daily_url = chart_url_pref + "candle/day" + chart_url_post  # 주봉 봉차트 URL
+        chart_weekly_url = chart_url_pref + "candle/week" + chart_url_post  # 주봉 봉차트 URL
+        chart_monthly_url = chart_url_pref + "candle/month" + chart_url_post  # 월봉 봉차트 URL
+        # change to bar chart [end] - Jooyeok 20210417
+
 
 
     except Exception as e:
