@@ -157,6 +157,9 @@
           {% if finance_data|length==1 %}
             <img src="{{url_for('static', filename='check/nostatement.PNG')}}" height="530" width="900">
           {% else %}
+            <div id="statements-chart" class="d-flex justify-content-center">
+              <img src="{{url_for('static', filename=scimg)}}" width="600" height="400">
+            </div>
             <div id="statements-table-yearly">
               <table id="finance-table-yearly" class="table table-light table-bordered border-dark table-hover align-middle text-center">
                 <thead>
