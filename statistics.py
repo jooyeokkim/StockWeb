@@ -102,52 +102,46 @@ def topsector():
     return render_template('statistics/topsector.html')
 
 
-@bp.route('/managementitems', methods=['GET', 'POST'])
-def managementitems():
-    #관리 종목
-    response=requests.get("https://finance.naver.com/sise/management.nhn")
+@bp.route('/cap', methods=['GET', 'POST'])
+def capkospi():
+    response=requests.get("https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    manage_table=soup.select('table.type_2')[0]
-    manage_table_tr=manage_table.select('tr')[2:]
-    Manage_list=[] # 관리종목 리스트
-    Manage_day_list=[] # 지정일 리스트
-    Manage_reason=[]
-    Manage_reason_list=[] # 지정사유 리스트
-    n=1
-    for i in manage_table_tr:
+    Kospi_list=[] # 코스피 시가총액 상위 50개 종목 리스트
+    Kospi_list_price=[] # 코스피 상위 50개 주가
+    Kospi_list_value=[] # 코스피 상위 50개 시가총액
+    kospi_list=soup.select('table.type_2')[0]
+    kospi_list_tr=kospi_list.select('tr')[2:]
+    for i in kospi_list_tr:
         if i.get_text().strip()=='':
             continue
-        Manage_list.append(i.select('td')[1].get_text().strip())
-        Manage_day_list.append(i.select('td')[6].get_text().strip())
-        Manage_reason.append(i.select('p#reasonPopup_'+str(n))[0].get_text().strip())
-        #지정사유의 태그가 p#reasonPopup_1,p#reasonPopup_2,p#reasonPopup_3 순으로 되어있음
-        if Manage_reason[n-1]=='':   # 지정 사유 공백인 경우 ''를 넣어줌
-            Manage_reason_list.append('')
-            n+=1
-            continue
-        Manage_reason_list.append(Manage_reason[n-1][0:Manage_reason[n-1].index('\n')])
-        # Manage_reason이 지정사유\n 으로 되어있어 \n이 나올때까지 Manage_reason_list에 넣어줌
-        n += 1
+        Kospi_list.append(i.select('td')[1].get_text().strip())
+        Kospi_list_price.append(i.select('td')[2].get_text().strip())
+        Kospi_list_value.append(i.select('td')[6].get_text().strip())
 
-    #거래정지 종목
-    response=requests.get("https://finance.naver.com/sise/trading_halt.nhn")
+    response=requests.get("https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    Halt_table=soup.select('table.type_2')[0]
-    Halt_table_tr=Halt_table.select('tr')[2:]
-    Halt_list=[] # 거래정지 종목 리스트
-    Halt_day_list=[] # 거래정지일 리스트
-    Halt_reason_list=[] # 거래정지사유 리스트
-    n=1
-    for i in Halt_table_tr:
+    kospi_list=soup.select('table.type_2')[0]
+    kospi_list_tr=kospi_list.select('tr')[2:]
+    Kosdaq_list=[]  # 코스닥 시가총액 상위 50개 종목 리스트
+    Kosdaq_list_price=[]    # 코스닥 상위 50개 주가
+    Kosdaq_list_value=[]    # 코스닥 상위 50개 시가총액
+    for i in kospi_list_tr:
         if i.get_text().strip()=='':
             continue
-        Halt_list.append(i.select('td')[1].get_text().strip())
-        Halt_day_list.append(i.select('td')[2].get_text().strip())
-        Halt_reason_list.append(i.select('td')[3].get_text().strip())
-
-    return "haltitems"
+        Kosdaq_list.append(i.select('td')[1].get_text().strip())
+        Kosdaq_list_price.append(i.select('td')[2].get_text().strip())
+        Kosdaq_list_value.append(i.select('td')[6].get_text().strip())
+    
+    return render_template('statistics/cap.html',
+                            Kospi_list=Kospi_list,
+                            Kospi_list_price=Kospi_list_price,
+                            Kospi_list_value=Kospi_list_value,
+                            Kosdaq_list=Kosdaq_list,
+                            Kosdaq_list_price=Kosdaq_list_price,
+                            Kosdaq_list_value=Kosdaq_list_value
+    )
 
 
 @bp.route('/volume', methods=['GET', 'POST'])
@@ -159,14 +153,12 @@ def kospivolume():
     Volume_table_tr=Volume_talble.select('tr')[2:]
     Kospi_Volume_list=[]    #코스피 거래량 상위100 종목 리스트
     Kospi_Volume_price=[]   #코스피 거래량 상위100 주가
-    Kospi_Volume_f=[]   #코스피 거래량 상위100 등락률
     Kospi_Volume=[]   #코스피 거래량 상위100 거래량
     for i in Volume_table_tr:
         if i.get_text().strip()=='':
             continue
         Kospi_Volume_list.append(i.select('td')[1].get_text().strip())
         Kospi_Volume_price.append(i.select('td')[2].get_text().strip())
-        Kospi_Volume_f.append(i.select('td')[4].get_text().strip())
         Kospi_Volume.append(i.select('td')[5].get_text().strip())
 
     response=requests.get("https://finance.naver.com/sise/sise_quant.nhn?sosok=1")
@@ -176,17 +168,23 @@ def kospivolume():
     Volume_table_tr=Volume_talble.select('tr')[2:]
     Kosdaq_Volume_list=[]    #코스닥 거래량 상위100 종목 리스트
     Kosdaq_Volume_price=[]   #코스닥 거래량 상위100 주가
-    Kosdaq_Volume_f=[]   #코스닥 거래량 상위100 등락률
     Kosdaq_Volume=[]   #코스닥 거래량 상위100 거래량
     for i in Volume_table_tr:
         if i.get_text().strip()=='':
             continue
         Kosdaq_Volume_list.append(i.select('td')[1].get_text().strip())
         Kosdaq_Volume_price.append(i.select('td')[2].get_text().strip())
-        Kosdaq_Volume_f.append(i.select('td')[4].get_text().strip())
         Kosdaq_Volume.append(i.select('td')[5].get_text().strip())
     
-    return "volume"
+    return render_template('statistics/volume.html',
+                            Kospi_Volume_list=Kospi_Volume_list,
+                            Kospi_Volume_price=Kospi_Volume_price,
+                            Kospi_Volume=Kospi_Volume,
+                            Kosdaq_Volume_list=Kosdaq_Volume_list,
+                            Kosdaq_Volume_price=Kosdaq_Volume_price,
+                            Kosdaq_Volume=Kosdaq_Volume,
+    )
+
 
 @bp.route('/ulitems', methods=['GET', 'POST'])
 def upperitems():
@@ -233,43 +231,49 @@ def upperitems():
     return "loweritems"
 
 
-@bp.route('/cap', methods=['GET', 'POST'])
-def capkospi():
-    response=requests.get("https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0")
+@bp.route('/managementitems', methods=['GET', 'POST'])
+def managementitems():
+    #관리 종목
+    response=requests.get("https://finance.naver.com/sise/management.nhn")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    Kospi_list=[] # 코스피 시가총액 상위 50개 종목 리스트
-    Kospi_list_price=[] # 코스피 상위 50개 주가
-    Kospi_list_value=[] # 코스피 상위 50개 시가총액
-    kospi_list=soup.select('table.type_2')[0]
-    kospi_list_tr=kospi_list.select('tr')[2:]
-    for i in kospi_list_tr:
+    manage_table=soup.select('table.type_2')[0]
+    manage_table_tr=manage_table.select('tr')[2:]
+    Manage_list=[] # 관리종목 리스트
+    Manage_day_list=[] # 지정일 리스트
+    Manage_reason=[]
+    Manage_reason_list=[] # 지정사유 리스트
+    n=1
+    for i in manage_table_tr:
         if i.get_text().strip()=='':
             continue
-        Kospi_list.append(i.select('td')[1].get_text().strip())
-        Kospi_list_price.append(i.select('td')[2].get_text().strip())
-        Kospi_list_value.append(i.select('td')[6].get_text().strip())
+        Manage_list.append(i.select('td')[1].get_text().strip())
+        Manage_day_list.append(i.select('td')[6].get_text().strip())
+        Manage_reason.append(i.select('p#reasonPopup_'+str(n))[0].get_text().strip())
+        #지정사유의 태그가 p#reasonPopup_1,p#reasonPopup_2,p#reasonPopup_3 순으로 되어있음
+        if Manage_reason[n-1]=='':   # 지정 사유 공백인 경우 ''를 넣어줌
+            Manage_reason_list.append('')
+            n+=1
+            continue
+        Manage_reason_list.append(Manage_reason[n-1][0:Manage_reason[n-1].index('\n')])
+        # Manage_reason이 지정사유\n 으로 되어있어 \n이 나올때까지 Manage_reason_list에 넣어줌
+        n += 1
 
-    response=requests.get("https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1")
+    #거래정지 종목
+    response=requests.get("https://finance.naver.com/sise/trading_halt.nhn")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    kospi_list=soup.select('table.type_2')[0]
-    kospi_list_tr=kospi_list.select('tr')[2:]
-    Kosdaq_list=[]  # 코스닥 시가총액 상위 50개 종목 리스트
-    Kosdaq_list_price=[]    # 코스닥 상위 50개 주가
-    Kosdaq_list_value=[]    # 코스닥 상위 50개 시가총액
-    for i in kospi_list_tr:
+    Halt_table=soup.select('table.type_2')[0]
+    Halt_table_tr=Halt_table.select('tr')[2:]
+    Halt_list=[] # 거래정지 종목 리스트
+    Halt_day_list=[] # 거래정지일 리스트
+    Halt_reason_list=[] # 거래정지사유 리스트
+    n=1
+    for i in Halt_table_tr:
         if i.get_text().strip()=='':
             continue
-        Kosdaq_list.append(i.select('td')[1].get_text().strip())
-        Kosdaq_list_price.append(i.select('td')[2].get_text().strip())
-        Kosdaq_list_value.append(i.select('td')[6].get_text().strip())
-    
-    return render_template('statistics/cap.html',
-                            Kospi_list=Kospi_list,
-                            Kospi_list_price=Kospi_list_price,
-                            Kospi_list_value=Kospi_list_value,
-                            Kosdaq_list=Kosdaq_list,
-                            Kosdaq_list_price=Kosdaq_list_price,
-                            Kosdaq_list_value=Kosdaq_list_value
-    )
+        Halt_list.append(i.select('td')[1].get_text().strip())
+        Halt_day_list.append(i.select('td')[2].get_text().strip())
+        Halt_reason_list.append(i.select('td')[3].get_text().strip())
+
+    return "haltitems"

@@ -3,7 +3,6 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="../static/css/statistics.css"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -39,7 +38,7 @@
           </div>
         </nav>
         <div id="main-title" class="d-flex justify-content-center">
-          <p class="fs-1 d-inline"><b>상위 업종/테마</b></p><br>
+          <p class="fs-1 d-inline"><b>시가 총액 상위</b></p><br>
         </div>
         <section class="d-flex justify-content-center">
             <div class="me-4">
@@ -64,16 +63,54 @@
                   </div>
               </div>
             <div id="statistics-content" class="d-flex justify-content-center">
-                <div id="sector-container">
-                    <mark class="fs-2"><b>※ 업종</b></mark>
-                    <div id="sector" class="d-flex flex-column mt-3">
-                        <img class="border border-2" src="{{url_for('static', filename='topsector/topsec.png')}}" width="750" height="500">
+                <div id="vol-kospi-container" style="width:740px;">
+                    <mark class="fs-2"><b>※ 코스피</b></mark>
+                    <div id="vol-kospi" class="d-flex flex-column mt-3">
+                      <table class="table table-striped table-hover table-bordered border-dark table-center">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">종목명</th>
+                            <th scope="col">주가(원)</th>
+                            <th scope="col">거래량(주)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in range(0,100) %}
+                            <tr>
+                              <td>{{i+1}}</td>
+                              <td>{{Kospi_Volume_list[i]}}</td>
+                              <td>{{Kospi_Volume_price[i]}}</td>
+                              <td><b>{{Kospi_Volume[i]}}</b></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                 </div>
-                <div id="thema-container" class="ms-4">
-                    <mark class="fs-2"><b>※ 테마</b></mark>
-                    <div id="thema" class="d-flex flex-column mt-3">
-                        <img class="border border-2" src="{{url_for('static', filename='topsector/topthe.png')}}" width="750" height="500">
+                <div id="vol-kosdaq-container" class="ms-4" style="width:740px;">
+                    <mark class="fs-2"><b>※ 코스닥</b></mark>
+                    <div id="vol-kosdaq" class="d-flex flex-column mt-3">
+                      <table class="table table-striped table-hover table-bordered border-dark table-center">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">종목명</th>
+                            <th scope="col">주가(원)</th>
+                            <th scope="col">거래량(주)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in range(0,100) %}
+                            <tr>
+                              <td>{{i+1}}</td>
+                              <td>{{Kosdaq_Volume_list[i]}}</td>
+                              <td>{{Kosdaq_Volume_price[i]}}</td>
+                              <td><b>{{Kosdaq_Volume[i]}}</b></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                 </div>
             </div>
