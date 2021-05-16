@@ -1,0 +1,65 @@
+.mainContainer {
+    position:relative;
+}
+#textControl {
+    font-size:1rem;
+    width:250px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.white, .white a {
+    color: #fff;
+}
+
+.icon-margin {
+    margin-right: 15px;
+    margin-left: 10px;
+}
+
+#main-title{
+    text-decoration: underline double gray;
+    margin-top:1rem;
+    margin-bottom:2rem;
+}
+
+#loading {
+    display: none;
+}
+
+#font-bhs, #search-button{
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+section{
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.nav-item{
+    margin-left:1rem;
+}
+
+#menu-title {
+    background-color: lightgray;
+}
+
+#submenu{
+    margin-right: 3rem;
+}
+
+#submenu-mark{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size : 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#kospi-table, #kosdaq-table{
+    height:90px;
+    font-size:20px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.table-center{
+    text-align: center;
+}

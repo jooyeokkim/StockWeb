@@ -96,7 +96,6 @@ def check():
             else:
                 same_type_list.append(type_list[i])  # *가 없다면 바로 삽입
         # same_type_list-동일업종 리스트
-        print(same_type_list)
 
         stock_value = soup.select('div.first')[0]  # div태그의 class값이 first인 태그를 stock_value에 넣어줌
         STOCK_VALUE = [item.get_text() for item in stock_value.select('td')][0]  # 그 중 첫 td태그인 시가총액을 STOCK_VALUE에 넣어줌
@@ -235,17 +234,11 @@ def check():
             # y축은 100만이상 수치는 표현 불가, 가장 큰 수치인 매출액을 기준으로 100만이상이면 단위를 100조로 표현하고 아니면 억 원
 
             ax1 = pyplot.twinx()  # x축을 공유하는 이익률 선그래프 (2중 y축)
-
             df2 = pd.DataFrame(data_rate, columns=["date", "영업이익률", "순이익률"])
-
             df2.plot(x="date", y=["영업이익률", "순이익률"], kind='line',rot=0, ax=ax1, marker='o', linewidth=2.5,color=['purple','orange'])
-
             ax1.legend(loc='upper center', bbox_to_anchor=(0.8, -0.08),fancybox=True, shadow=True, ncol=5)  # 상단에 순이익률, 영업이익률 표시
-
             ax1.set_ylabel('%', rotation=0, labelpad=10)  # 우측에 %표시
-
             pyplot.savefig("static/check/" + code + ".png", bbox_inches='tight', dpi=200)  # 여백을 최소화하여 파일 저장
-
             pyplot.clf()  # 그래프를 초기화
 
         chart = soup.find("img", id="img_chart_area")  # 일봉 차트 img태그
