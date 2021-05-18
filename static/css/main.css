@@ -3,11 +3,11 @@ section {
 }
 section::after{
     content:'';
-    background-image: url(../main/stock_img1.jpg);
+    background-image: url(../main/stock_img0.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
-    min-width: 1920px;
-    min-height: 800px;
+    width: 1920px;
+    height: 800px;
     margin:0 auto;
     opacity: 0.6;
     z-index: -1;
@@ -48,4 +48,14 @@ span {
 
 .nav-item{
     margin-left:1rem;
+}
+
+#carouse-message{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 25px;
+}
+
+#carousel{
+    width: 1500px;
+    height:750px;
 }

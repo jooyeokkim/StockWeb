@@ -9,12 +9,11 @@ import requests
 
 bp = Blueprint('bpstatistics', __name__, url_prefix='/statistics')
 
-response=requests.get("https://finance.naver.com/sise/")
-html = response.text
-soup = BeautifulSoup(html, 'html.parser')
-
 @bp.route('/priceindex', methods=['GET', 'POST'])
 def priceindex():
+    response=requests.get("https://finance.naver.com/sise/")
+    html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
     Kospi_chart=soup.find('div',id='tab_sel1_sise_main_chart')
     Kosdaq_chart=soup.find('div',id='tab_sel2_sise_main_chart')
     Kospi_chart_url=Kospi_chart.find('img')['src']   # 코스피 차트 img url
@@ -32,7 +31,6 @@ def priceindex():
     Kosdaq_trend=soup.select('ul#tab_sel2_deal_trend')[0]
     Kospi_trading=[item.get_text().strip() for item in Kospi_trend.select('li')] [1:]   # 코스피 투자자별 매매동향
     Kosdaq_trading=[item.get_text().strip() for item in Kosdaq_trend.select('li')] [1:]    # 코스닥 투자자별 매매동향
-    print(Kospi_chart_url)
     return render_template('statistics/priceindex.html',
                             Kospi_chart_url=Kospi_chart_url,
                             Kosdaq_chart_url=Kosdaq_chart_url,
@@ -47,6 +45,9 @@ def priceindex():
 
 @bp.route('/topsector', methods=['GET', 'POST'])
 def topsector():
+    response=requests.get("https://finance.naver.com/sise/")
+    html = response.text
+    soup = BeautifulSoup(html, 'html.parser')
     #업종별 시세
     Industry = soup.find('div', id='contentarea_left')
     Industry_rate = [item.get_text().strip() for item in Industry.select('td.number')][:6]  # 업종별 top1~6 시세
@@ -192,43 +193,42 @@ def upperitems():
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
     Upper_limit_list=[]   # 상한가 종목 리스트
+    Upper_limit_price=[]   # 상한가 종목 주가
     Upper_limit_fluctuation=[]  # 상한가 종목 등락률
-    Upper_limit=soup.select('table.type_5')[0]
-    Upper_limit_tr=Upper_limit.select('tr')[2:]
-    for i in Upper_limit_tr:
-        if i.get_text().strip()=='':
-            continue
-        Upper_limit_list.append(i.select('td')[3].get_text().strip())
-        Upper_limit_fluctuation.append(i.select('td')[6].get_text().strip())
-    Upper_limit=soup.select('table.type_5')[1]
-    Upper_limit_tr=Upper_limit.select('tr')[2:]
-    for i in Upper_limit_tr:
-        if i.get_text().strip()=='':
-            continue
-        Upper_limit_list.append(i.select('td')[3].get_text().strip())
-        Upper_limit_fluctuation.append(i.select('td')[6].get_text().strip())
+    for i in range(0,2):
+        Upper_limit=soup.select('table.type_5')[i]
+        Upper_limit_tr=Upper_limit.select('tr')[2:]
+        for j in Upper_limit_tr:
+            if j.get_text().strip()=='':
+                continue
+            Upper_limit_list.append(j.select('td')[3].get_text().strip())
+            Upper_limit_price.append(j.select('td')[4].get_text().strip())
+            Upper_limit_fluctuation.append(j.select('td')[6].get_text().strip())
 
     response=requests.get("https://finance.naver.com/sise/sise_lower.nhn")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
     Lower_limit_list=[] # 하한가 종목 리스트
+    Lower_limit_price=[]   # 하한가 종목 주가
     Lower_limit_fluctuation=[]  # 하한가 종목 등락률
-    Lower_limit=soup.select('table.type_5')[0]
-    Lower_limit_tr=Lower_limit.select('tr')[2:]
-    for i in Lower_limit_tr:
-        if i.get_text().strip()=='':
-            continue
-        Lower_limit_list.append(i.select('td')[3].get_text().strip())
-        Lower_limit_fluctuation.append(i.select('td')[6].get_text().strip())
-    Lower_limit=soup.select('table.type_5')[1]
-    Lower_limit_tr=Lower_limit.select('tr')[2:]
-    for i in Lower_limit_tr:
-        if i.get_text().strip()=='':
-            continue
-        Lower_limit_list.append(i.select('td')[3].get_text().strip())
-        Lower_limit_fluctuation.append(i.select('td')[6].get_text().strip())
-
-    return "loweritems"
+    for i in range(0,2):
+        Lower_limit=soup.select('table.type_5')[i]
+        Lower_limit_tr=Lower_limit.select('tr')[2:]
+        for j in Lower_limit_tr:
+            if j.get_text().strip()=='':
+                continue
+            Lower_limit_list.append(j.select('td')[3].get_text().strip())
+            Lower_limit_price.append(j.select('td')[4].get_text().strip())
+            Lower_limit_fluctuation.append(j.select('td')[6].get_text().strip())
+    print(Upper_limit_list)
+    return render_template('statistics/ulitems.html',
+                            Upper_limit_list=Upper_limit_list,
+                            Upper_limit_price=Upper_limit_price,
+                            Upper_limit_fluctuation=Upper_limit_fluctuation,
+                            Lower_limit_list=Lower_limit_list,
+                            Lower_limit_price=Lower_limit_price,
+                            Lower_limit_fluctuation=Lower_limit_fluctuation
+    )
 
 
 @bp.route('/managementitems', methods=['GET', 'POST'])
@@ -276,4 +276,11 @@ def managementitems():
         Halt_day_list.append(i.select('td')[2].get_text().strip())
         Halt_reason_list.append(i.select('td')[3].get_text().strip())
 
-    return "haltitems"
+    return render_template('statistics/managementitems.html',
+                            Manage_list=Manage_list,
+                            Manage_day_list=Manage_day_list,
+                            Manage_reason_list=Manage_reason_list,
+                            Halt_list=Halt_list,
+                            Halt_day_list=Halt_day_list,
+                            Halt_reason_list=Halt_reason_list
+    )

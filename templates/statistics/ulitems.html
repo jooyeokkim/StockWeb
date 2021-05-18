@@ -38,7 +38,7 @@
           </div>
         </nav>
         <div id="main-title" class="d-flex justify-content-center">
-          <p class="fs-1 d-inline"><b>거래량 상위</b></p><br>
+          <p class="fs-1 d-inline"><b>상한가/하한가 종목</b></p><br>
         </div>
         <section class="d-flex justify-content-center">
             <div class="me-4">
@@ -64,7 +64,7 @@
               </div>
             <div id="statistics-content" class="d-flex justify-content-center">
                 <div id="vol-kospi-container" style="width:740px;">
-                    <mark class="fs-2"><b>※ 코스피</b></mark>
+                    <mark class="fs-2"><b>※ 상한가</b></mark>
                     <div id="vol-kospi" class="d-flex flex-column mt-3">
                       <table class="table table-striped table-hover table-bordered border-dark table-center">
                         <thead>
@@ -72,16 +72,16 @@
                             <th scope="col">#</th>
                             <th scope="col">종목명</th>
                             <th scope="col">주가(원)</th>
-                            <th scope="col">거래량(주)</th>
+                            <th scope="col">등락율(%)</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for i in range(0,100) %}
+                          {% for i in range(0, Upper_limit_list|length) %}
                             <tr>
                               <td>{{i+1}}</td>
-                              <td>{{Kospi_Volume_list[i]}}</td>
-                              <td>{{Kospi_Volume_price[i]}}</td>
-                              <td><b>{{Kospi_Volume[i]}}</b></td>
+                              <td>{{Upper_limit_list[i]}}</td>
+                              <td>{{Upper_limit_price[i]}}</td>
+                              <td>{{Upper_limit_fluctuation[i]}}</td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div id="vol-kosdaq-container" class="ms-4" style="width:740px;">
-                    <mark class="fs-2"><b>※ 코스닥</b></mark>
+                    <mark class="fs-2"><b>※ 하한가</b></mark>
                     <div id="vol-kosdaq" class="d-flex flex-column mt-3">
                       <table class="table table-striped table-hover table-bordered border-dark table-center">
                         <thead>
@@ -97,19 +97,17 @@
                             <th scope="col">#</th>
                             <th scope="col">종목명</th>
                             <th scope="col">주가(원)</th>
-                            <th scope="col">거래량(주)</th>
+                            <th scope="col">등락율(%)</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {% for i in range(0,100) %}
+                        {% for i in range(0, Lower_limit_list|length) %}
                             <tr>
                               <td>{{i+1}}</td>
-                              <td>{{Kosdaq_Volume_list[i]}}</td>
-                              <td>{{Kosdaq_Volume_price[i]}}</td>
-                              <td><b>{{Kosdaq_Volume[i]}}</b></td>
+                              <td>{{Lower_limit_list[i]}}</td>
+                              <td>{{Lower_limit_price[i]}}</td>
+                              <td>{{Lower_limit_fluctuation[i]}}</td>
                             </tr>
                           {% endfor %}
-                        </tbody>
                       </table>
                     </div>
                 </div>
