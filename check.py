@@ -145,9 +145,9 @@ def check():
         quarter_date = date[7:13]
 
         finance_index = [item.get_text().strip() for item in finance_html.select('th.h_th2')][3:]
-
         finance_data = [item.get_text().strip() for item in finance_html.select('td')]
         # finance_data는 재무제표 2차원 배열 15x10
+        finance_data_unit = ["(억)","(억)","(억)","(%)","(%)","(%)","(%)","(%)","(%)"]
 
         f_data = list(filter(lambda x: x != '', finance_data))
         if f_data:
@@ -276,5 +276,6 @@ def check():
                            quarter_date=quarter_date,
                            finance_index=finance_index,
                            finance_data=finance_data,
+                           finance_data_unit=finance_data_unit,
                            scimg="check/"+code+".png"
                            )

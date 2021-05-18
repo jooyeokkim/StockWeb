@@ -172,7 +172,7 @@
                 <tbody>
                   {% for i in range(0,9) %}
                     <tr>
-                      <td>{{finance_index[i]}}</td>
+                      <td>{{finance_index[i]}}{{finance_data_unit[i]}}</td>
                       {% for j in range(0, annual_date|length) %}
                         <td>{{finance_data[i][j]}}</td>
                       {% endfor %}
@@ -194,7 +194,7 @@
                 <tbody>
                   {% for i in range(0,9) %}
                     <tr>
-                      <td>{{finance_index[i]}}</td>
+                      <td>{{finance_index[i]}}{{finance_data_unit[i]}}</td>
                       {% for j in range(4, 4+quarter_date|length) %}
                         <td>{{finance_data[i][j]}}</td>
                       {% endfor %}
