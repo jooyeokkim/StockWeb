@@ -6,16 +6,16 @@ section::after{
     background-image: url(../main/stock_img0.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
-    width: 1920px;
-    height: 800px;
+    min-width: 1920px;
+    min-height: 800px;
     margin:0 auto;
     opacity: 0.6;
     z-index: -1;
 }
 #main-intro {
     position: absolute;
-    width:500px;
-    height:400px;
+    /* width:500px;
+    height:400px; */
 }
 span {
     font-family: 'Quicksand', sans-serif;
