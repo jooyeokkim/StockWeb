@@ -104,7 +104,7 @@ def topsector():
 
 
 @bp.route('/cap', methods=['GET', 'POST'])
-def capkospi():
+def cap():
     response=requests.get("https://finance.naver.com/sise/sise_market_sum.nhn?sosok=0")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
@@ -146,7 +146,7 @@ def capkospi():
 
 
 @bp.route('/volume', methods=['GET', 'POST'])
-def kospivolume():
+def volume():
     response=requests.get("https://finance.naver.com/sise/sise_quant.nhn")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
@@ -188,7 +188,7 @@ def kospivolume():
 
 
 @bp.route('/ulitems', methods=['GET', 'POST'])
-def upperitems():
+def ulitems():
     response=requests.get("https://finance.naver.com/sise/sise_upper.nhn")
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
