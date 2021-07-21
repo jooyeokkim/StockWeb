@@ -148,18 +148,18 @@
                   <label class="btn btn-outline-dark" for="btnradio3">월봉</label>
                 </div>
               </div>
-              <img id="chart-img" class="border border-2" src="{{chart_daily_url}}" height="430" width="900">
+              <img id="chart-img" class="border border-2" src="{{chart_daily_url}}" height="450">
             </div>
         </section>
         <p id="menu-title" class="align-items-center fs-5 text-center"><b>재무제표</b></p>
-        <div id="stock-statements" class="d-flex justify-content-center align-items-center">
+        <div id="stock-statements" class="d-flex flex-column">
           {% if finance_data|length==1 %}
-            <img src="{{url_for('static', filename='check/nostatement.PNG')}}" height="530" width="900">
+            <img src="{{url_for('static', filename='check/nostatement.PNG')}}">
           {% else %}
             <div id="statements-chart" class="d-flex justify-content-center">
               <img src="{{url_for('static', filename=scimg)}}" width="600" height="400">
             </div>
-            <div id="statements-table-yearly">
+            <div id="statements-table-yearly" class="mb-2 mt-2">
               <table id="finance-table-yearly" class="table table-light table-bordered border-dark table-hover align-middle text-center">
                 <thead>
                   <tr>

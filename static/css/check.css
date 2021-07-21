@@ -13,6 +13,10 @@
     margin-left: 10px;
 }
 
+nav {
+    width:100%;
+}
+
 #search {
     margin : 10px;
 }
@@ -37,6 +41,7 @@
 }
 
 section{
+    overflow:hidden;
     margin-top: 1rem;
     margin-bottom: 2rem;
 }
@@ -46,11 +51,12 @@ section{
 }
 
 #stock-price{
+    width:20%;
     margin: 2rem;
 }
 
 #price-table, #same-type-table{
-    width:250px;
+    width:100%;
     margin-bottom:2rem;
     text-align: center;
 }
@@ -78,11 +84,14 @@ section{
     margin: 1rem;
 }
 
+#stock-graph {
+    width : 55%;
+}
 #menu-title {
     background-color: lightgray;
 }
 
-#statements-table-yearly {
-    margin-left: 1rem;
-    margin-right: 1rem;
+#statements-table-yearly, #statements-table-quarterly {
+    width:90%;
+    margin:0 auto;
 }
