@@ -44,6 +44,9 @@ section{
     background-color: lightgray;
 }
 
+#submenu-container{
+    width:15%;
+}
 #submenu{
     margin-right: 3rem;
 }
@@ -62,4 +65,20 @@ section{
 
 .table-center{
     text-align: center;
+}
+
+#statistics-content{
+    width:65%;
+}
+
+#picture-content{
+    width:75%;
+}
+
+.double-container, .picture-container{
+    width:48%;
+}
+
+.submenu-margin {
+    margin-right: 1.5rem;
 }

@@ -42,7 +42,7 @@
           <p class="fs-1 d-inline"><b>상위 업종/테마</b></p><br>
         </div>
         <section class="d-flex justify-content-center">
-            <div class="me-4">
+            <div class="submenu-container submenu-margin">
                 <div id="submenu" class="d-flex flex-column border border-4 p-3">
                     <div id="submenu-mark" class="d-flex justify-content-center text-center">
                         <div>MENU</div>
@@ -63,17 +63,17 @@
                     </div>
                   </div>
               </div>
-            <div id="statistics-content" class="d-flex justify-content-center">
-                <div id="sector-container">
+            <div id="picture-content" class="d-flex justify-content-center">
+                <div class="picture-container">
                     <mark class="fs-2"><b>※ 업종</b></mark>
                     <div id="sector" class="d-flex flex-column mt-3">
-                        <img class="border border-2" src="{{url_for('static', filename='topsector/topsec.png')}}" width="750" height="500">
+                        <img class="border border-2" src="{{url_for('static', filename='topsector/topsec.png')}}">
                     </div>
                 </div>
-                <div id="thema-container" class="ms-4">
+                <div class="picture-container ms-4">
                     <mark class="fs-2"><b>※ 테마</b></mark>
                     <div id="thema" class="d-flex flex-column mt-3">
-                        <img class="border border-2" src="{{url_for('static', filename='topsector/topthe.png')}}" width="750" height="500">
+                        <img class="border border-2" src="{{url_for('static', filename='topsector/topthe.png')}}">
                     </div>
                 </div>
             </div>
